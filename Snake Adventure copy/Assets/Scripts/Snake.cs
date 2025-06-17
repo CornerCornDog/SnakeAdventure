@@ -12,12 +12,16 @@ public class Snake : MonoBehaviour
     private Vector2 touchStart;
     public float speed;
 
+    public Transform snakeHead;
+
     private List<Transform> segments = new List<Transform>();
     public Transform segmentPrefab;
 
     public GameObject loseLevelPanel;
+    public GameObject winLevelPanel;
     public TextMeshProUGUI foodCounter;
     private int foodCount;
+    public TextMeshProUGUI foodEndText;
 
     private Vector2 direction = Vector2.right;
     // Start is called before the first frame update
@@ -25,6 +29,8 @@ public class Snake : MonoBehaviour
     {
         Time.timeScale = 1;
         loseLevelPanel.SetActive(false);
+        winLevelPanel.SetActive(false);
+        foodCount = 0;
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
         segments.Add(this.transform);
         foodCounter.text = "Food: " + foodCount;
@@ -38,10 +44,12 @@ public class Snake : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
+                snakeHead.rotation = Quaternion.Euler(0,0,90);
                 direction = Vector2.up;
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
+                snakeHead.rotation = Quaternion.Euler(0, 0, -90);
                 direction = Vector2.down;
             }
         }
@@ -49,10 +57,12 @@ public class Snake : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
+                snakeHead.rotation = Quaternion.Euler(0, 0, 180);
                 direction = Vector2.left;
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
+                snakeHead.rotation = Quaternion.Euler(0, 0, 0);
                 direction = Vector2.right;
             }
         }
@@ -94,10 +104,20 @@ public class Snake : MonoBehaviour
             Destroy(gate);
             Destroy(other.gameObject);
         }
+        else if (other.tag == "End")
+        {
+
+        }
     }
     private void Lose()
     {
         loseLevelPanel.SetActive(true);
         Time.timeScale = 0;
     }
+    private void Win()
+    {
+        winLevelPanel.SetActive(true);
+        foodEndText.text = "Food Collected: " + foodCount + " / 15";
+        Time.timeScale = 0;
+    }    
 }
