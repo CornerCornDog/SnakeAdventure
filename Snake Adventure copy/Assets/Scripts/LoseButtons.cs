@@ -20,4 +20,8 @@ public class LoseButtons : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+    public void levelSelectButton()
+    {
+        SceneManager.LoadScene(1);
+    }
 }

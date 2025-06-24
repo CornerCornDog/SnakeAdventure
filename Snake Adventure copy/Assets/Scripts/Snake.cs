@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Snake : MonoBehaviour
 {
@@ -19,11 +20,14 @@ public class Snake : MonoBehaviour
 
     public GameObject loseLevelPanel;
     public GameObject winLevelPanel;
+    public GameObject star1, star2, star3;
     public TextMeshProUGUI foodCounter;
     private int foodCount;
     public TextMeshProUGUI foodEndText;
 
     private Vector2 direction = Vector2.right;
+
+    private bool isGamePlaying;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,12 +38,12 @@ public class Snake : MonoBehaviour
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
         segments.Add(this.transform);
         foodCounter.text = "Food: " + foodCount;
+        isGamePlaying = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_EDITOR
         if(direction == Vector2.left || direction == Vector2.right)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -66,17 +70,17 @@ public class Snake : MonoBehaviour
                 direction = Vector2.right;
             }
         }
-#elif UNITY_IOS || UNITY_ANDROID
-
-#endif
     }
     private void FixedUpdate()
     {
-        for(int i = segments.Count - 1; i > 0; i--)
+        if(isGamePlaying)
         {
-            segments[i].position = segments[i - 1].position;
+            for (int i = segments.Count - 1; i > 0; i--)
+            {
+                segments[i].position = segments[i - 1].position;
+            }
+            this.transform.position = new Vector3((Mathf.Round(this.transform.position.x) + direction.x), (Mathf.Round(this.transform.position.y) + direction.y), 0);
         }
-        this.transform.position = new Vector3((Mathf.Round(this.transform.position.x) + direction.x) , (Mathf.Round(this.transform.position.y) + direction.y), 0);
     }
     public void Grow()
     {
@@ -106,18 +110,99 @@ public class Snake : MonoBehaviour
         }
         else if (other.tag == "End")
         {
-
+            Win();
         }
     }
     private void Lose()
     {
         loseLevelPanel.SetActive(true);
-        Time.timeScale = 0;
+        isGamePlaying = false;
     }
     private void Win()
     {
         winLevelPanel.SetActive(true);
+        if(SceneManager.GetActiveScene().name == "Level 1")
+        {
+            if (foodCount >= 5 || PlayerPrefs.GetInt("levelOneStars") >= 1)
+            {
+                LeanTween.scale(star1, new Vector3(1, 1, 1), 0.2f);
+                if (PlayerPrefs.GetInt("levelOneStars") < 1)
+                {
+                    PlayerPrefs.SetInt("levelOneStars", 1);
+                }
+                if (foodCount >= 10 || PlayerPrefs.GetInt("levelOneStars") >= 2)
+                {
+                    LeanTween.scale(star2, new Vector3(1, 1, 1), 0.2f);
+                    if (PlayerPrefs.GetInt("levelOneStars") < 2)
+                    {
+                        PlayerPrefs.SetInt("levelOneStars", 2);
+                    }
+                    if (foodCount == 15 || PlayerPrefs.GetInt("levelOneStars") >= 3)
+                    {
+                        LeanTween.scale(star3, new Vector3(1, 1, 1), 0.2f);
+                        if (PlayerPrefs.GetInt("levelOneStars") < 3)
+                        {
+                            PlayerPrefs.SetInt("levelOneStars", 3);
+                        }
+                    }
+                }
+            }
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 2")
+        {
+            if (foodCount >= 5 || PlayerPrefs.GetInt("levelTwoStars") >= 1)
+            {
+                LeanTween.scale(star1, new Vector3(1, 1, 1), 0.2f);
+                if (PlayerPrefs.GetInt("levelTwoStars") < 1)
+                {
+                    PlayerPrefs.SetInt("levelTwoStars", 1);
+                }
+                if (foodCount >= 10 || PlayerPrefs.GetInt("levelTwoStars") >= 2)
+                {
+                    LeanTween.scale(star2, new Vector3(1, 1, 1), 0.2f);
+                    if (PlayerPrefs.GetInt("levelTwoStars") < 2)
+                    {
+                        PlayerPrefs.SetInt("levelTwoStars", 2);
+                    }
+                    if (foodCount == 15 || PlayerPrefs.GetInt("levelTwoStars") >= 3)
+                    {
+                        LeanTween.scale(star3, new Vector3(1, 1, 1), 0.2f);
+                        if (PlayerPrefs.GetInt("levelTwoStars") < 3)
+                        {
+                            PlayerPrefs.SetInt("levelTwoStars", 3);
+                        }
+                    }
+                }
+            }
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 3")
+        {
+            if (foodCount >= 5 || PlayerPrefs.GetInt("levelThreeStars") >= 1)
+            {
+                LeanTween.scale(star1, new Vector3(1, 1, 1), 0.2f);
+                if (PlayerPrefs.GetInt("levelThreeStars") < 1)
+                {
+                    PlayerPrefs.SetInt("levelThreeStars", 1);
+                }
+                if (foodCount >= 10 || PlayerPrefs.GetInt("levelThreeStars") >= 2)
+                {
+                    LeanTween.scale(star2, new Vector3(1, 1, 1), 0.2f);
+                    if (PlayerPrefs.GetInt("levelThreeStars") < 2)
+                    {
+                        PlayerPrefs.SetInt("levelThreeStars", 2);
+                    }
+                    if (foodCount == 15 || PlayerPrefs.GetInt("levelThreeStars") >= 3)
+                    {
+                        LeanTween.scale(star3, new Vector3(1, 1, 1), 0.2f);
+                        if (PlayerPrefs.GetInt("levelThreeStars") < 3)
+                        {
+                            PlayerPrefs.SetInt("levelThreeStars", 3);
+                        }
+                    }
+                }
+            }
+        }
         foodEndText.text = "Food Collected: " + foodCount + " / 15";
-        Time.timeScale = 0;
+        isGamePlaying = false;
     }    
 }
